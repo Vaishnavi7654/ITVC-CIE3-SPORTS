@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}Book {{ facility.name }}{% endblock %}
+{% block content %}
+<div class="page" style="max-width:700px">
+  <a href="/dashboard" style="font-size:13px;color:rgba(255,255,255,.45);display:inline-flex;align-items:center;gap:6px;margin-bottom:20px">← Back to dashboard</a>
+
+  {% set icons = {'Cricket':'🏏','Football':'⚽','Basketball':'🏀','Badminton':'🏸','Swimming':'🏊'} %}
+  {% set colors = {'Cricket':'#f97316','Football':'#22c55e','Basketball':'#f59e0b','Badminton':'#3b82f6','Swimming':'#06b6d4'} %}
+
+  <div class="glass-strong" style="padding:24px;margin-bottom:20px;display:flex;align-items:center;gap:16px">
+    <div class="sport-icon" style="width:54px;height:54px;font-size:26px;background:{{ colors.get(facility.sport,'#818cf8') }}22;color:{{ colors.get(facility.sport,'#818cf8') }}">
+      {{ icons.get(facility.sport,'🏅') }}
+    </div>
+    <div>
+      <h1 style="font-size:20px;font-weight:600;color:#fff">{{ facility.name }}</h1>
+      <p style="font-size:13px;color:rgba(255,255,255,.45);margin-top:3px">{{ facility.description }} &bull; Capacity: {{ facility.capacity }}</p>
+    </div>
+  </div>
+
+  <div class="glass-strong" style="padding:24px">
+    <form method="POST" id="bookForm">
+      <div class="form-group">
+        <label>Select Date</label>
+        <input type="date" name="booking_date" id="dateInput" min="{{ today }}" required />
+      </div>
+
+      <div>
+        <label style="font-size:12px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.05em">Select Time Slot</label>
+        <div class="slot-grid" id="slotGrid">
+          <p style="color:rgba(255,255,255,.3);font-size:13px;margin-top:12px;grid-column:1/-1">Pick a date to see available slots</p>
+        </div>
+      </div>
+
+      <input type="hidden" name="slot_id" id="slotIdInput" />
+
+      <button type="submit" class="btn btn-primary" style="width:100%;margin-top:20px" id="submitBtn" disabled>
+        Confirm Booking
+      </button>
+    </form>
+  </div>
+
+  <div class="glass" style="padding:14px 18px;margin-top:16px;display:flex;gap:20px;flex-wrap:wrap">
+    <span style="font-size:12px;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:6px">
+      <span style="width:12px;height:12px;border-radius:3px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);display:inline-block"></span> Available
+    </span>
+    <span style="font-size:12px;color:rgba(129,140,248,.8);display:flex;align-items:center;gap:6px">
+      <span style="width:12px;height:12px;border-radius:3px;background:rgba(129,140,248,.25);border:1px solid #818cf8;display:inline-block"></span> Selected
+    </span>
+    <span style="font-size:12px;color:rgba(239,68,68,.6);display:flex;align-items:center;gap:6px">
+      <span style="width:12px;height:12px;border-radius:3px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);display:inline-block"></span> Already booked
+    </span>
+  </div>
+</div>
+
+<script>
+var facilityId = {{ facility.id }};
+
+document.getElementById('dateInput').addEventListener('change', function(){
+  var d = this.value;
+  var grid = document.getElementById('slotGrid');
+  grid.innerHTML = '<p style="color:rgba(255,255,255,.3);font-size:13px;grid-column:1/-1">Loading slots...</p>';
+  document.getElementById('slotIdInput').value = '';
+  document.getElementById('submitBtn').disabled = true;
+
+  fetch('/api/available_slots?facility_id=' + facilityId + '&date=' + d)
+    .then(function(r){ return r.json(); })
+    .then(function(slots){
+      grid.innerHTML = '';
+      slots.forEach(function(s){
+        var div = document.createElement('div');
+        div.className = 'slot-btn' + (s.available ? '' : ' booked');
+        div.innerHTML = '<div class="slot-time">' + s.start + ' – ' + s.end + '</div>' +
+                        '<div class="slot-status">' + (s.available ? 'Available' : 'Booked') + '</div>';
+        if(s.available){
+          div.onclick = function(){
+            document.querySelectorAll('.slot-btn').forEach(function(b){ b.classList.remove('selected'); });
+            div.classList.add('selected');
+            document.getElementById('slotIdInput').value = s.id;
+            document.getElementById('submitBtn').disabled = false;
+          };
+        }
+        grid.appendChild(div);
+      });
+    });
+});
+
+document.getElementById('bookForm').addEventListener('submit', function(e){
+  if(!document.getElementById('slotIdInput').value){
+    e.preventDefault();
+    alert('Please select a time slot.');
+  }
+});
+</script>
+{% endblock %}
+
+
