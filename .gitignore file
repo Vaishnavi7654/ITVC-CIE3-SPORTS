@@ -1,0 +1,4 @@
+ __pycache__/ > .gitignore
+ *.pyc >> .gitignore
+ sports.db >> .gitignore
+ .env >> .gitignore
