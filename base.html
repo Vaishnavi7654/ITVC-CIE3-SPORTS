@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{% block title %}Sports Booking{% endblock %} | College Sports</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+a{color:#818cf8;text-decoration:none}
+a:hover{color:#a5b4fc}
+
+/* Glass */
+.glass{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;backdrop-filter:blur(16px)}
+.glass-strong{background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.2);border-radius:16px;backdrop-filter:blur(20px)}
+
+/* Navbar */
+nav{background:rgba(15,23,42,.85);border-bottom:1px solid rgba(255,255,255,.1);backdrop-filter:blur(12px);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
+.nav-brand{font-size:18px;font-weight:600;color:#fff;display:flex;align-items:center;gap:8px}
+.nav-brand span{color:#818cf8}
+.nav-links{display:flex;gap:6px;align-items:center}
+.nav-links a{padding:6px 14px;border-radius:8px;font-size:14px;color:rgba(255,255,255,.7);transition:.2s}
+.nav-links a:hover{background:rgba(255,255,255,.08);color:#fff}
+.nav-links a.active{background:rgba(129,140,248,.2);color:#818cf8}
+.nav-badge{background:#818cf8;color:#fff;font-size:10px;padding:2px 6px;border-radius:99px;margin-left:4px}
+
+/* Page */
+.page{max-width:1100px;margin:0 auto;padding:32px 20px}
+.page-title{font-size:24px;font-weight:600;color:#fff;margin-bottom:6px}
+.page-sub{font-size:14px;color:rgba(255,255,255,.45);margin-bottom:28px}
+
+/* Cards */
+.card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:20px}
+.card-title{font-size:15px;font-weight:600;color:#fff;margin-bottom:4px}
+.card-sub{font-size:12px;color:rgba(255,255,255,.4)}
+
+/* Grid */
+.grid-2{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+
+/* Stats */
+.stat-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px;text-align:center}
+.stat-num{font-size:28px;font-weight:700;color:#818cf8}
+.stat-label{font-size:12px;color:rgba(255,255,255,.45);margin-top:4px}
+
+/* Buttons */
+.btn{display:inline-block;padding:9px 20px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;border:none;transition:.2s;font-family:inherit}
+.btn-primary{background:#4f46e5;color:#fff}
+.btn-primary:hover{background:#4338ca;color:#fff}
+.btn-success{background:#059669;color:#fff}
+.btn-success:hover{background:#047857;color:#fff}
+.btn-danger{background:rgba(239,68,68,.2);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
+.btn-danger:hover{background:rgba(239,68,68,.35);color:#fff}
+.btn-outline{background:transparent;color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.2)}
+.btn-outline:hover{background:rgba(255,255,255,.08);color:#fff}
+.btn-sm{padding:5px 12px;font-size:12px;border-radius:7px}
+
+/* Form */
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:12px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.form-group input,.form-group select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;font-size:14px;padding:10px 14px;outline:none;font-family:inherit;transition:.2s}
+.form-group input::placeholder{color:rgba(255,255,255,.25)}
+.form-group input:focus,.form-group select:focus{border-color:#818cf8;background:rgba(129,140,248,.08)}
+.form-group select option{background:#1e293b}
+
+/* Alerts */
+.alert{padding:12px 16px;border-radius:10px;font-size:14px;margin-bottom:16px}
+.alert-error{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#fca5a5}
+.alert-success{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);color:#86efac}
+.alert-info{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);color:#93c5fd}
+
+/* Badge */
+.badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:500}
+.badge-confirmed{background:rgba(34,197,94,.15);color:#86efac;border:1px solid rgba(34,197,94,.25)}
+.badge-cancelled{background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(239,68,68,.25)}
+
+/* Table */
+.table-wrap{overflow-x:auto;border-radius:12px;border:1px solid rgba(255,255,255,.1)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);text-transform:uppercase;font-size:11px;letter-spacing:.05em;padding:12px 16px;text-align:left}
+td{padding:12px 16px;border-top:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.8);vertical-align:middle}
+tr:hover td{background:rgba(255,255,255,.03)}
+
+/* Sport icons */
+.sport-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+
+/* Orbs */
+.orbs{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.2}
+.orb1{width:400px;height:400px;background:#7c3aed;top:-100px;left:-100px}
+.orb2{width:300px;height:300px;background:#0ea5e9;top:200px;right:-80px}
+.orb3{width:250px;height:250px;background:#10b981;bottom:0;left:40%}
+
+.content{position:relative;z-index:1}
+
+/* Divider */
+.divider{border:none;border-top:1px solid rgba(255,255,255,.08);margin:24px 0}
+
+/* Slot grid */
+.slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px}
+.slot-btn{padding:10px;border-radius:10px;text-align:center;cursor:pointer;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:rgba(255,255,255,.8);font-size:13px;transition:.2s}
+.slot-btn:hover{border-color:#818cf8;background:rgba(129,140,248,.15);color:#818cf8}
+.slot-btn.selected{border-color:#818cf8;background:rgba(129,140,248,.25);color:#818cf8}
+.slot-btn.booked{border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.08);color:rgba(239,68,68,.6);cursor:not-allowed}
+.slot-time{font-weight:600;font-size:12px}
+.slot-status{font-size:10px;margin-top:2px;opacity:.7}
+</style>
+</head>
+<body>
+<div class="orbs"><div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div></div>
+
+{% if session.user_id %}
+<nav>
+  <div class="nav-brand">🏟️ <span>Sports</span>Booking</div>
+  <div class="nav-links">
+    {% if session.role == 'admin' %}
+      <a href="/admin" class="{{ 'active' if request.path == '/admin' }}">Admin Panel</a>
+    {% else %}
+      <a href="/dashboard" class="{{ 'active' if request.path == '/dashboard' }}">Home</a>
+      <a href="/my_bookings" class="{{ 'active' if request.path == '/my_bookings' }}">My Bookings</a>
+    {% endif %}
+    <a href="/logout" class="btn btn-outline btn-sm" style="margin-left:8px">Logout</a>
+  </div>
+</nav>
+{% endif %}
+
+<div class="content">
+{% with msgs = get_flashed_messages(with_categories=true) %}
+  {% if msgs %}
+    <div style="max-width:1100px;margin:16px auto;padding:0 20px">
+    {% for cat, msg in msgs %}
+      <div class="alert alert-{{ 'error' if cat == 'error' else ('success' if cat == 'success' else 'info') }}">{{ msg }}</div>
+    {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+</div>
+</body>
+</html>

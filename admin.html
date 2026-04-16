@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}Admin Panel{% endblock %}
+{% block content %}
+<div class="page">
+  <h1 class="page-title">Admin Panel </h1>
+  <p class="page-sub">Manage all bookings, facilities, and users</p>
+
+  <div class="grid-4" style="margin-bottom:32px">
+    <div class="stat-card">
+      <div class="stat-num">{{ stats.total_bookings }}</div>
+      <div class="stat-label">Active Bookings</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:#34d399">{{ stats.today_bookings }}</div>
+      <div class="stat-label">Today's Bookings</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:#f59e0b">{{ stats.total_users }}</div>
+      <div class="stat-label">Registered Students</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:#f97316">{{ stats.total_facilities }}</div>
+      <div class="stat-label">Facilities</div>
+    </div>
+  </div>
+
+  <h2 style="font-size:16px;font-weight:600;color:#fff;margin-bottom:14px">🏟️ Facilities</h2>
+  <div class="grid-3" style="margin-bottom:32px">
+    {% set icons = {'Cricket':'🏏','Football':'⚽','Basketball':'🏀','Badminton':'🏸','Swimming':'🏊'} %}
+    {% set colors = {'Cricket':'#f97316','Football':'#22c55e','Basketball':'#f59e0b','Badminton':'#3b82f6','Swimming':'#06b6d4'} %}
+    {% for f in facilities %}
+    <div class="card" style="display:flex;align-items:center;gap:12px">
+      <div class="sport-icon" style="background:{{ colors.get(f.sport,'#818cf8') }}22;color:{{ colors.get(f.sport,'#818cf8') }}">
+        {{ icons.get(f.sport,'🏅') }}
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#fff">{{ f.name }}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px">Capacity: {{ f.capacity }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <h2 style="font-size:16px;font-weight:600;color:#fff;margin-bottom:14px">📋 All Bookings</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Student</th>
+          <th>Facility</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in bookings %}
+        <tr>
+          <td style="color:rgba(255,255,255,.3)">{{ b.id }}</td>
+          <td>
+            <div style="font-size:13px;color:#fff;font-weight:500">{{ b.uname }}</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.35)">{{ b.email }}</div>
+          </td>
+          <td>
+            <div>{{ icons.get(b.sport,'🏅') }} {{ b.fname }}</div>
+          </td>
+          <td>{{ b.booking_date }}</td>
+          <td style="color:#818cf8;white-space:nowrap">{{ b.start_time }} – {{ b.end_time }}</td>
+          <td><span class="badge badge-{{ b.status }}">{{ b.status.capitalize() }}</span></td>
+          <td>
+            {% if b.status == 'confirmed' %}
+            <a href="/admin/cancel/{{ b.id }}" class="btn btn-danger btn-sm" onclick="return confirm('Cancel this booking?')">Cancel</a>
+            {% else %}
+            <span style="color:rgba(255,255,255,.2);font-size:12px">—</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
